@@ -508,7 +508,7 @@ tr.selected {
   position: fixed;
   top: 20px;
   right: 20px;
-  background-color: #4caf50;
+  background: linear-gradient(to right, #667eea, #764ba2);
   color: white;
   padding: 15px 25px;
   border-radius: 4px;
