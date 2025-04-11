@@ -27,7 +27,7 @@ const CreateUrl = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "http://localhost:5000/api/urls",
+        "https://url-shortner-t72a.onrender.com/api/urls",
         formData,
         {
           headers: {
@@ -36,7 +36,7 @@ const CreateUrl = () => {
         }
       );
 
-      setShortUrl(`http://localhost:5000/${response.data.data.shortUrl}`);
+      setShortUrl(`https://url-shortner-t72a.onrender.com/${response.data.data.shortUrl}`);
       setFormData({
         longUrl: "",
         alias: "",
