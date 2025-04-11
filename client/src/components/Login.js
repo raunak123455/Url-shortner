@@ -52,7 +52,7 @@ const Login = () => {
         setApiError("");
 
         const response = await axios.post(
-          "http://localhost:5000/api/auth/login",
+          "https://url-shortner-t72a.onrender.com/api/auth/login",
           formData
         );
 
