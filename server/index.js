@@ -16,7 +16,7 @@ app.use(express.json());
 
 // MongoDB Connection
 mongoose
-  .connect(process.env.MONGODB_URI || "mongodb://localhost:27017/mern-app", {
+  .connect(process.env.MONGODB_URI || "mongodb+srv://raunakrana101:raunak123@task.ipcmm.mongodb.net/Url?retryWrites=true&w=majority", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
