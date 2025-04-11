@@ -120,7 +120,7 @@ const Login = () => {
               <input type="checkbox" id="remember" disabled={loading} />
               <label htmlFor="remember">Remember me</label>
             </div>
-            <a href="/forgot-password" className="forgot-password">
+            <a href="/register" className="forgot-password">
               Forgot Password?
             </a>
           </div>
