@@ -35,6 +35,7 @@ const AnalyticsDashboard = () => {
   const [createUrlError, setCreateUrlError] = useState("");
   const [createLoading, setCreateLoading] = useState(false);
   const [showQRCode, setShowQRCode] = useState(null);
+  const [showCopyPopup, setShowCopyPopup] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -54,16 +55,19 @@ const AnalyticsDashboard = () => {
   const fetchUrls = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("https://url-shortner-t72a.onrender.com/api/urls", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        params: {
-          page: currentPage,
-          limit: itemsPerPage,
-          search: searchTerm,
-        },
-      });
+      const response = await axios.get(
+        "https://url-shortner-t72a.onrender.com/api/urls",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            page: currentPage,
+            limit: itemsPerPage,
+            search: searchTerm,
+          },
+        }
+      );
       setUrls(response.data.data);
       setTotalPages(response.data.totalPages);
     } catch (err) {
@@ -147,7 +151,9 @@ const AnalyticsDashboard = () => {
 
       console.log("Server response:", response.data);
       if (response.data.success) {
-        setShortUrl(`https://url-shortner-t72a.onrender.com/${response.data.data.shortUrl}`);
+        setShortUrl(
+          `https://url-shortner-t72a.onrender.com/${response.data.data.shortUrl}`
+        );
         setFormData({
           longUrl: "",
           alias: "",
@@ -174,6 +180,10 @@ const AnalyticsDashboard = () => {
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(shortUrl);
+    setShowCopyPopup(true);
+    setTimeout(() => {
+      setShowCopyPopup(false);
+    }, 2000);
   };
 
   const toggleQRCode = (urlId) => {
@@ -195,6 +205,9 @@ const AnalyticsDashboard = () => {
 
   return (
     <div className="dashboard-container">
+      {showCopyPopup && (
+        <div className="copy-popup">URL copied to clipboard!</div>
+      )}
       <div className="dashboard-content">
         <div className="dashboard-header">
           <h2>URL Shortener Dashboard</h2>
@@ -314,7 +327,7 @@ const AnalyticsDashboard = () => {
                     className={selectedUrl === url._id ? "selected" : ""}
                   >
                     <td>{url.longUrl}</td>
-                    <td>{`http://localhost:5000/${url.shortUrl}`}</td>
+                    <td>{`https://url-shortner-t72a.onrender.com/${url.shortUrl}`}</td>
                     <td>
                       <button
                         className="qr-button"
@@ -341,7 +354,7 @@ const AnalyticsDashboard = () => {
                         <div className="qr-container">
                           <QRCodeSVG
                             id={`qr-${url._id}`}
-                            value={`http://localhost:5000/${url.shortUrl}`}
+                            value={`https://url-shortner-t72a.onrender.com/${url.shortUrl}`}
                             size={200}
                             level="H"
                             includeMargin={true}

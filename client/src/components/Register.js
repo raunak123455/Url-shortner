@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./Login.css";
+import "./Register.css";
 
-const Login = () => {
+const Register = () => {
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
   });
@@ -30,6 +31,9 @@ const Login = () => {
 
   const validateForm = () => {
     const newErrors = {};
+    if (!formData.name) {
+      newErrors.name = "Name is required";
+    }
     if (!formData.email) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
@@ -46,41 +50,79 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Form submitted");
+
     if (validateForm()) {
       try {
         setLoading(true);
         setApiError("");
+        console.log("Sending registration request with data:", {
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        });
 
         const response = await axios.post(
-          "https://url-shortner-t72a.onrender.com/api/auth/login",
-          formData
+          "https://url-shortner-t72a.onrender.com/api/auth/register",
+          {
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+          }
         );
+
+        console.log("Registration response:", response.data);
 
         // Store token in localStorage
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
 
-        navigate("/dashboard");
+        navigate("/login");
       } catch (error) {
+        console.error("Registration error:", error);
         setLoading(false);
         if (error.response) {
-          setApiError(error.response.data.error || "Login failed");
+          console.error("Error response:", error.response.data);
+          setApiError(error.response.data.error || "Registration failed");
+        } else if (error.request) {
+          console.error("No response received:", error.request);
+          setApiError("No response from server. Please try again.");
         } else {
+          console.error("Error setting up request:", error.message);
           setApiError("Network error. Please try again.");
         }
       }
+    } else {
+      console.log("Form validation failed");
     }
   };
 
   return (
-    <div className="login-container">
-      <div className="login-form-container">
-        <h2>Welcome Back</h2>
-        <p className="subtitle">Please login to your account</p>
+    <div className="register-container">
+      <div className="register-form-container">
+        <h2>Create Account</h2>
+        <p className="subtitle">Join us to start shortening your URLs</p>
 
         {apiError && <div className="api-error">{apiError}</div>}
 
-        <form onSubmit={handleSubmit} className="login-form">
+        <form onSubmit={handleSubmit} className="register-form">
+          <div className="form-group">
+            <label htmlFor="name">Full Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Enter your full name"
+              className={errors.name ? "error" : ""}
+              disabled={loading}
+            />
+            {errors.name && (
+              <span className="error-message">{errors.name}</span>
+            )}
+          </div>
+
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
@@ -115,27 +157,20 @@ const Login = () => {
             )}
           </div>
 
-          <div className="form-options">
-            <div className="remember-me">
-              <input type="checkbox" id="remember" disabled={loading} />
-              <label htmlFor="remember">Remember me</label>
+          <button type="submit" className="register-button" disabled={loading}>
+            <div className="button-content">
+              {loading && <div className="spinner"></div>}
+              {loading ? "Creating Account..." : "Create Account"}
             </div>
-            <a href="/forgot-password" className="forgot-password">
-              Forgot Password?
-            </a>
-          </div>
-
-          <button type="submit" className="login-button" disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 
-        <div className="signup-link">
-          Don't have an account? <a href="/register">Sign up</a>
+        <div className="login-link">
+          Already have an account? <a href="/login">Login</a>
         </div>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default Register;
