@@ -90,7 +90,7 @@ const AnalyticsDashboard = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `http://localhost:5000/api/urls/${urlId}/analytics`,
+        `https://url-shortner-t72a.onrender.com/api/urls/${urlId}/analytics`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -136,7 +136,7 @@ const AnalyticsDashboard = () => {
 
       console.log("Creating short URL with data:", requestData);
       const response = await axios.post(
-        "http://localhost:5000/api/urls",
+        "https://url-shortner-t72a.onrender.com/api/urls",
         requestData,
         {
           headers: {
@@ -147,7 +147,7 @@ const AnalyticsDashboard = () => {
 
       console.log("Server response:", response.data);
       if (response.data.success) {
-        setShortUrl(`http://localhost:5000/${response.data.data.shortUrl}`);
+        setShortUrl(`https://url-shortner-t72a.onrender.com/${response.data.data.shortUrl}`);
         setFormData({
           longUrl: "",
           alias: "",
